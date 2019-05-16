@@ -19,6 +19,12 @@ app.get('/', async (req, res) => {
       date: syzoj.utils.formatDate(article.public_time, 'L')
     }));
 
+    let discuss = (await Article.query([1,10], { is_notice: false }, [['public_time', 'desc']])).map(article => ({
+      title: article.title,
+      url: syzoj.utils.makeUrl(['article', article.id]),
+      date: syzoj.utils.formatDate(article.public_time, 'L')
+    }));
+
     let fortune = null;
     if (res.locals.user) {
       fortune = Divine(res.locals.user.username, res.locals.user.sex);
@@ -35,6 +41,7 @@ app.get('/', async (req, res) => {
     res.render('index', {
       ranklist: ranklist,
       notices: notices,
+      discuss: discuss,
       fortune: fortune,
       contests: contests,
       problems: problems,
